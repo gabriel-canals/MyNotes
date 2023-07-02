@@ -1,16 +1,15 @@
-// ignore_for_file: avoid_print
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class LoginView extends StatefulWidget {
-  const LoginView({super.key});
+class RegisterView extends StatefulWidget {
+  const RegisterView({super.key});
 
   @override
-  State<LoginView> createState() => _LoginViewState();
+  State<RegisterView> createState() => _RegisterViewState();
 }
 
-class _LoginViewState extends State<LoginView> {
+class _RegisterViewState extends State<RegisterView> {
   late final TextEditingController _username;
   late final TextEditingController _passwd;
 
@@ -18,21 +17,21 @@ class _LoginViewState extends State<LoginView> {
   void initState() {
     _username = TextEditingController();
     _passwd = TextEditingController();
-    super.initState();
+   super.initState();
   }
-
+  
   @override
   void dispose() {
     _username.dispose();
     _passwd.dispose();
-    super.dispose();
+    super.dispose(); 
   }
-
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Login'),
+        title: const Text('Register'),
       ),
       body: Column(
         children: [
@@ -48,41 +47,40 @@ class _LoginViewState extends State<LoginView> {
           TextField(
             decoration: const InputDecoration(
               hintText: 'Password',
-            ),
-            controller: _passwd,
+           ),
+            obscureText: true,
             enableSuggestions: false,
             autocorrect: false,
-            obscureText: true,
+            controller: _passwd,
           ),
           TextButton(
             onPressed: () async {
               final email = _username.text;
-              final passwd = _passwd.text;
+              final password = _passwd.text;
               try {
-                final userCredential =
-                  await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: passwd);
+                final userCredential = 
+                  await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password);
                 print(userCredential);
               } on FirebaseAuthException catch(e) {
-                if (e.code == 'user-not-found') {
-                  print('This username has not been found');
-                } else if (e.code == 'wrong-password') {
-                  print('Wrong password. Please try again');
-                }
+                if (e.code == 'invalid-email') print('This is an invalid email');
+                else if (e.code == 'weak-password') print('This password is not valid');
+                else if (e.code == 'email-already-in-use') print('An account linked to this email already exists');
+                else print(e.code);
               }
-            }, 
-           child: const Text('Sign in')
+            },
+            child: const Text('Register'),
           ),
-          const Text('Not registered yet?'),
+          const Text('Already have an account?'),
           TextButton(onPressed: () {
             Navigator.of(context).pushNamedAndRemoveUntil(
-              '/register/',
+              '/login/',
               (route) => false,
             );
           }, 
-          child: const Text('Create an account'),
-          )
-        ],
+          child: const Text('Sign in'),
+          ),
+        ]
       ),
-    );
-  }    
+    );      
+  }
 }
