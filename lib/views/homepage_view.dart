@@ -13,6 +13,7 @@ class Homepage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Home'),
+        
       ),
       body: FutureBuilder(
         future: Firebase.initializeApp(
