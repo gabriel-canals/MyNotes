@@ -1,0 +1,5 @@
+{
+  "editor.fontSize": 17,
+  "dart.showDartDeveloperLogs": true,
+  "prettier.enableDebugLogs": true
+}

@@ -1,10 +1,14 @@
 // ignore_for_file: avoid_print
 
+
+import 'dart:developer';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:mynotes/firebase_options.dart';
 import 'package:mynotes/views/login_view.dart';
+import 'package:mynotes/views/notes_view.dart';
 import 'package:mynotes/views/verify_email_view.dart';
 
 class Homepage extends StatelessWidget {
@@ -22,13 +26,11 @@ class Homepage extends StatelessWidget {
             final user = FirebaseAuth.instance.currentUser;
             if(user != null) {
               if (user.emailVerified) {
-                const Text('You are a verified user.');
-                return const LoginView();
+                return const NotesView();
               } else {
                 return const VerifyEmail();
               }
             } else {
-              print(user);
               return const LoginView();
             }
           default:
