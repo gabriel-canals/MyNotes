@@ -1,8 +1,8 @@
-import 'dart:developer';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mynotes/constants/routes.dart';
+
+import '../utilities/show_error_dialog.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -68,14 +68,32 @@ class _LoginViewState extends State<LoginView> {
                     (route) => false,
                   );
                 } else {
-                  // TODO: Push verify email view
+                  final user = FirebaseAuth.instance.currentUser;
+                  await user?.sendEmailVerification();
+                  Navigator.of(context).pushNamed(verifyEmailRoute);
                 }
               } on FirebaseAuthException catch(e) {
                 if (e.code == 'user-not-found') {
-                  log('This username has not been found');
+                  await showErrorDialog(
+                    context, 
+                    'This user has not been found.'
+                  );
                 } else if (e.code == 'wrong-password') {
-                  log('Wrong password. Please try again');
+                  await showErrorDialog(
+                    context,
+                    'Wrong password. Please try again.'
+                  );
+                } else {
+                  await showErrorDialog(
+                    context,
+                    'Error: ${e.code}. Please try again.'
+                  );
                 }
+              } catch(e) {
+                await showErrorDialog(
+                  context, 
+                  'Error: ${e.toString()}. Please try again.'
+                );
               }
             }, 
            child: const Text('Sign in')
