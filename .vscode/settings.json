@@ -1,5 +1,7 @@
 {
   "editor.fontSize": 17,
   "dart.showDartDeveloperLogs": true,
-  "prettier.enableDebugLogs": true
+  "prettier.enableDebugLogs": true,
+  "editor.defaultFormatter": "Dart-Code.dart-code",
+  "editor.formatOnSave": true,
 }

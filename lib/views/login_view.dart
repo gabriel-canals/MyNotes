@@ -56,59 +56,60 @@ class _LoginViewState extends State<LoginView> {
             obscureText: true,
           ),
           TextButton(
-            onPressed: () async {
-              final email = _username.text;
-              final passwd = _passwd.text;
-              try {
-                await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: passwd);
-                final user = FirebaseAuth.instance.currentUser;
-                if (user != null && user.emailVerified) {
-                  Navigator.of(context).pushNamedAndRemoveUntil(
-                    notesRoute,
-                    (route) => false,
-                  );
-                } else {
+              onPressed: () async {
+                final email = _username.text;
+                final passwd = _passwd.text;
+                try {
+                  await FirebaseAuth.instance.signInWithEmailAndPassword(
+                      email: email, password: passwd);
                   final user = FirebaseAuth.instance.currentUser;
-                  await user?.sendEmailVerification();
-                  Navigator.of(context).pushNamed(verifyEmailRoute);
-                }
-              } on FirebaseAuthException catch(e) {
-                if (e.code == 'user-not-found') {
-                  await showErrorDialog(
-                    context, 
-                    'This user has not been found.'
-                  );
-                } else if (e.code == 'wrong-password') {
+                  if (user != null && user.emailVerified) {
+                    Navigator.of(context).pushNamedAndRemoveUntil(
+                      notesRoute,
+                      (route) => false,
+                    );
+                  } else {
+                    final user = FirebaseAuth.instance.currentUser;
+                    await user?.sendEmailVerification();
+                    Navigator.of(context).pushNamed(verifyEmailRoute);
+                  }
+                } on FirebaseAuthException catch (e) {
+                  if (e.code == 'user-not-found') {
+                    await showErrorDialog(
+                      context,
+                      'This user has not been found.',
+                    );
+                  } else if (e.code == 'wrong-password') {
+                    await showErrorDialog(
+                      context,
+                      'Wrong password. Please try again.',
+                    );
+                  } else {
+                    await showErrorDialog(
+                      context,
+                      'Error: ${e.code}. Please try again.',
+                    );
+                  }
+                } catch (e) {
                   await showErrorDialog(
                     context,
-                    'Wrong password. Please try again.'
-                  );
-                } else {
-                  await showErrorDialog(
-                    context,
-                    'Error: ${e.code}. Please try again.'
+                    'Error: ${e.toString()}. Please try again.',
                   );
                 }
-              } catch(e) {
-                await showErrorDialog(
-                  context, 
-                  'Error: ${e.toString()}. Please try again.'
-                );
-              }
-            }, 
-           child: const Text('Sign in')
-          ),
+              },
+              child: const Text('Sign in')),
           const Text('Not registered yet?'),
-          TextButton(onPressed: () {
-            Navigator.of(context).pushNamedAndRemoveUntil(
-              registerRoute,
-              (route) => false,
-            );
-          }, 
-          child: const Text('Create an account'),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                registerRoute,
+                (route) => false,
+              );
+            },
+            child: const Text('Create an account'),
           )
         ],
       ),
     );
-  }    
+  }
 }

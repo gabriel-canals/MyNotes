@@ -6,13 +6,13 @@ import 'package:mynotes/services/auth/auth_exceptions.dart';
 class FirebaseAuthProvider implements AuthProvider {
   @override
   Future<AuthUser> createUser({
-    required String email, 
+    required String email,
     required String password,
   }) async {
     try {
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: email, 
-        password: password
+        email: email,
+        password: password,
       );
       final user = currentUser;
       if (user != null) {
@@ -20,7 +20,7 @@ class FirebaseAuthProvider implements AuthProvider {
       } else {
         throw UserNotLoggedInAuthException();
       }
-    } on FirebaseAuthException catch(e) {
+    } on FirebaseAuthException catch (e) {
       if (e.code == 'invalid-email') {
         throw InvalidEmailAuthException();
       } else if (e.code == 'weak-password') {
@@ -36,21 +36,19 @@ class FirebaseAuthProvider implements AuthProvider {
   }
 
   @override
-  AuthUser? get currentUser{
+  AuthUser? get currentUser {
     final user = FirebaseAuth.instance.currentUser;
     return user != null ? AuthUser.fromFirebase(user) : null;
   }
 
   @override
-  Future<AuthUser> logIn({
-    required String email, 
-    required String password
-  }) async {
+  Future<AuthUser> logIn({required String email, required String password}) async {
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: email, 
-        password: password
-      );      final user = currentUser;
+        email: email,
+        password: password,
+      );
+      final user = currentUser;
       if (user != null) {
         return user;
       } else {
