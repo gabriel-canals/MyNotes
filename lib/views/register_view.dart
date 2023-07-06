@@ -1,6 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mynotes/constants/routes.dart';
+import 'package:mynotes/services/auth/auth_exceptions.dart';
+import 'package:mynotes/services/auth/auth_service.dart';
 import 'package:mynotes/utilities/show_error_dialog.dart';
 
 class RegisterView extends StatefulWidget {
@@ -58,39 +59,31 @@ class _RegisterViewState extends State<RegisterView> {
             final email = _username.text;
             final password = _passwd.text;
             try {
-              await FirebaseAuth.instance.createUserWithEmailAndPassword(
+              await AuthService.firebase().logIn(
                 email: email,
                 password: password,
               );
-              final user = FirebaseAuth.instance.currentUser;
-              await user?.sendEmailVerification();
+              await AuthService.firebase().sendEmailVerification();
               Navigator.of(context).pushNamed(verifyEmailRoute);
-            } on FirebaseAuthException catch (e) {
-              if (e.code == 'invalid-email') {
-                await showErrorDialog(
-                  context,
-                  'This email is not valid. Please try again.',
-                );
-              } else if (e.code == 'weak-password') {
-                await showErrorDialog(
-                  context,
-                  'This password is too weak. Please try again.',
-                );
-              } else if (e.code == 'email-already-in-use') {
-                await showErrorDialog(
-                  context,
-                  'An account linked to this email already exists.',
-                );
-              } else {
-                await showErrorDialog(
-                  context,
-                  'Error ${e.code}. Please try again.',
-                );
-              }
-            } catch (e) {
-              showErrorDialog(
+            } on InvalidEmailAuthException {
+              await showErrorDialog(
                 context,
-                'Error: ${e.toString()}. Please try again.',
+                'This email is not valid. Please try again.',
+              );
+            } on WeakPasswordAuthException {
+              await showErrorDialog(
+                context,
+                'This password is too weak. Please try again.',
+              );
+            } on AlreadyInUseEmailAuthException {
+              await showErrorDialog(
+                context,
+                'An account linked to this email already exists.',
+              );
+            } on GenericAuthException {
+              await showErrorDialog(
+                context,
+                'An error has occurred. Please try again.',
               );
             }
           },

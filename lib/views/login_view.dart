@@ -1,6 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mynotes/constants/routes.dart';
+import 'package:mynotes/services/auth/auth_exceptions.dart';
+import 'package:mynotes/services/auth/auth_service.dart';
 
 import '../utilities/show_error_dialog.dart';
 
@@ -56,48 +57,40 @@ class _LoginViewState extends State<LoginView> {
             obscureText: true,
           ),
           TextButton(
-              onPressed: () async {
-                final email = _username.text;
-                final passwd = _passwd.text;
-                try {
-                  await FirebaseAuth.instance.signInWithEmailAndPassword(
-                      email: email, password: passwd);
-                  final user = FirebaseAuth.instance.currentUser;
-                  if (user != null && user.emailVerified) {
-                    Navigator.of(context).pushNamedAndRemoveUntil(
-                      notesRoute,
-                      (route) => false,
-                    );
-                  } else {
-                    final user = FirebaseAuth.instance.currentUser;
-                    await user?.sendEmailVerification();
-                    Navigator.of(context).pushNamed(verifyEmailRoute);
-                  }
-                } on FirebaseAuthException catch (e) {
-                  if (e.code == 'user-not-found') {
-                    await showErrorDialog(
-                      context,
-                      'This user has not been found.',
-                    );
-                  } else if (e.code == 'wrong-password') {
-                    await showErrorDialog(
-                      context,
-                      'Wrong password. Please try again.',
-                    );
-                  } else {
-                    await showErrorDialog(
-                      context,
-                      'Error: ${e.code}. Please try again.',
-                    );
-                  }
-                } catch (e) {
-                  await showErrorDialog(
-                    context,
-                    'Error: ${e.toString()}. Please try again.',
+            onPressed: () async {
+              final email = _username.text;
+              final passwd = _passwd.text;
+              try {
+                await AuthService.firebase().logIn(email: email, password: passwd);
+                final user = AuthService.firebase().currentUser;
+                if (user != null && user.isEmailVerified) {
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                    notesRoute,
+                    (route) => false,
                   );
+                } else {
+                  await AuthService.firebase().sendEmailVerification();
+                  Navigator.of(context).pushNamed(verifyEmailRoute);
                 }
-              },
-              child: const Text('Sign in')),
+              } on UserNotFoundAuthException {
+                await showErrorDialog(
+                  context,
+                  'This user has not been found.',
+                );
+              } on WrongPasswordAuthException {
+                await showErrorDialog(
+                  context,
+                  'Wrong password. Please try again.',
+                );
+              } on GenericAuthException {
+                await showErrorDialog(
+                  context,
+                  'Authentication error. Please try again.',
+                );
+              }
+            },
+            child: const Text('Sign in'),
+          ),
           const Text('Not registered yet?'),
           TextButton(
             onPressed: () {
