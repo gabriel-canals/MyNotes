@@ -21,7 +21,6 @@ class NotesService {
   Stream<List<DatabaseNote>> get allNotes => _notesStreamController.stream;
 
   Future<DatabaseUser> getOrCreateUser({required String email}) async {
-    _getDatabaseOrThrow();
     try {
       final user = await getUser(email: email);
       return user;
@@ -47,7 +46,7 @@ class NotesService {
     final db = _getDatabaseOrThrow();
     await getNote(noteId: note.noteId);
     final update = await db.update(noteTable, {
-      contentCol: text,
+      textCol: text,
     });
     if (update == 0) throw CouldNotUpdateNoteException();
     final updatedNote = await getNote(noteId: note.noteId);
@@ -64,15 +63,15 @@ class NotesService {
     return notes.map((e) => DatabaseNote.fromRow(e));
   }
 
-  Future<Iterable<DatabaseNote>> getAllNotesFromUser({required String email}) async {
-    await _ensureDbIsOpen();
-    final db = _getDatabaseOrThrow();
-    final user = await getUser(email: email);
-    final notes = await db.query(noteTable, where: 'uid = ?', whereArgs: [user.uid]);
-    if (notes.isEmpty) throw CouldNotFindNoteException();
-    final results = notes.map((e) => DatabaseNote.fromRow(e));
-    return results;
-  }
+//  Future<Iterable<DatabaseNote>> getAllNotesFromUser({required String email}) async {
+//    await _ensureDbIsOpen();
+//    final db = _getDatabaseOrThrow();
+//    final user = await getUser(email: email);
+//    final notes = await db.query(noteTable, where: 'uid = ?', whereArgs: [user.uid]);
+//    if (notes.isEmpty) throw CouldNotFindNoteException();
+//    final results = notes.map((e) => DatabaseNote.fromRow(e));
+//    return results;
+//  }
 
   Future<int> deleteAllNotes() async {
     await _ensureDbIsOpen();
@@ -89,7 +88,7 @@ class NotesService {
     final notes = await db.query(
       noteTable,
       limit: 1,
-      where: 'id = ?',
+      where: 'note_id = ?',
       whereArgs: [noteId],
     );
     if (notes.isEmpty) throw CouldNotFindNoteException();
@@ -105,7 +104,7 @@ class NotesService {
     final db = _getDatabaseOrThrow();
     final deleteCount = await db.delete(
       noteTable,
-      where: 'id = ?',
+      where: 'note_id = ?',
       whereArgs: [noteId],
     );
     if (deleteCount == 0) throw CouldNotDeleteNoteException();
@@ -121,13 +120,13 @@ class NotesService {
     const text = '';
     final noteId = await db.insert(noteTable, {
       userIdCol: owner.uid,
-      contentCol: text,
+      textCol: text,
     });
 
     final note = DatabaseNote(
       noteId: noteId,
       uid: owner.uid,
-      content: text,
+      text: text,
     );
 
     _notes.add(note);
@@ -204,21 +203,20 @@ class NotesService {
       final dbPath = join(docsPath.path, dbName);
       final db = await openDatabase(dbPath);
       _db = db;
-
       const createUserTable = '''CREATE TABLE IF NOT EXISTS "user" (
         "UID"	INTEGER NOT NULL,
-	      "email"	TEXT NOT NULL UNIQUE,
-	      PRIMARY KEY("UID" AUTOINCREMENT)
+        "email"	TEXT NOT NULL UNIQUE,
+        PRIMARY KEY("UID" AUTOINCREMENT)
       );''';
 
       await db.execute(createUserTable);
 
       const createNoteTable = '''CREATE TABLE IF NOT EXISTS "note" (
-      	"note_id"	INTEGER NOT NULL,
-      	"UID"	INTEGER NOT NULL,
-      	"content"	TEXT,
-      	FOREIGN KEY("UID") REFERENCES "user"("UID"),
-      	PRIMARY KEY("note_id" AUTOINCREMENT)
+        "note_id"	INTEGER NOT NULL,
+        "UID"	INTEGER NOT NULL,
+        "text"	TEXT,
+        FOREIGN KEY("UID") REFERENCES "user"("UID"),
+        PRIMARY KEY("note_id" AUTOINCREMENT)
       );''';
 
       await db.execute(createNoteTable);
@@ -241,7 +239,7 @@ class DatabaseUser {
   });
 
   DatabaseUser.fromRow(Map<String, Object?> map)
-      : uid = map[idCol] as int,
+      : uid = map[userIdCol] as int,
         email = map[emailCol] as String;
 
   @override
@@ -258,18 +256,18 @@ class DatabaseUser {
 class DatabaseNote {
   final int uid;
   final int noteId;
-  final String content;
+  final String text;
 
   const DatabaseNote({
     required this.uid,
     required this.noteId,
-    required this.content,
+    required this.text,
   });
 
   DatabaseNote.fromRow(Map<String, Object?> map)
       : noteId = map[idCol] as int,
         uid = map[userIdCol] as int,
-        content = map[contentCol] as String;
+        text = map[textCol] as String;
 
   @override
   String toString() => 'Note id: $noteId, User ID: $uid';
@@ -284,7 +282,7 @@ class DatabaseNote {
 const dbName = 'notes.db';
 const noteTable = 'note';
 const userTable = 'user';
-const idCol = 'id';
+const idCol = 'note_id';
 const emailCol = 'email';
-const userIdCol = 'userId';
-const contentCol = 'content';
+const userIdCol = 'UID';
+const textCol = 'text';

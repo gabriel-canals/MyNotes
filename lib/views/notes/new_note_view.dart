@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:mynotes/services/auth/auth_service.dart';
 import 'package:mynotes/services/crud/notes_service.dart';
@@ -36,13 +34,6 @@ class _NewNoteViewState extends State<NewNoteView> {
   void _setUpTextControllerListener() async {
     _textController.removeListener((_textControllerListener));
     _textController.addListener((_textControllerListener));
-    final note = _note;
-    if (note == null) return;
-    final text = _textController.text;
-    await _notesService.updateNote(
-      note: note,
-      text: text,
-    );
   }
 
   Future<DatabaseNote> createNewNote() async {
@@ -84,8 +75,8 @@ class _NewNoteViewState extends State<NewNoteView> {
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.done:
-              //! _note = snapshot.data as DatabaseNote; no funciona
-              _note = snapshot.data;
+              //! Cast mandatory. Exception without it.
+              _note = snapshot.data as DatabaseNote?;
               _setUpTextControllerListener();
               return TextField(
                 controller: _textController,
