@@ -75,8 +75,7 @@ class _NewNoteViewState extends State<NewNoteView> {
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.done:
-              //! Cast mandatory. Exception without it.
-              _note = snapshot.data as DatabaseNote?;
+              _note = snapshot.data;
               _setUpTextControllerListener();
               return TextField(
                 controller: _textController,
