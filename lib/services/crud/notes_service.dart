@@ -55,9 +55,14 @@ class NotesService {
     await getNote(noteId: note.noteId);
 
     // update DB
-    final updatesCount = await db.update(noteTable, {
-      textCol: text,
-    });
+    final updatesCount = await db.update(
+      noteTable,
+      {
+        textCol: text,
+      },
+      where: 'note_id = ?',
+      whereArgs: [note.noteId],
+    );
     if (updatesCount == 0) {
       throw CouldNotUpdateNoteException();
     } else {
