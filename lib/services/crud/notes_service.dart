@@ -50,34 +50,32 @@ class NotesService {
   }) async {
     await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
+
+    // make sure note exists
     await getNote(noteId: note.noteId);
-    final update = await db.update(noteTable, {
+
+    // update DB
+    final updatesCount = await db.update(noteTable, {
       textCol: text,
     });
-    if (update == 0) throw CouldNotUpdateNoteException();
-    final updatedNote = await getNote(noteId: note.noteId);
-    _notes.removeWhere((note) => note.noteId == updatedNote.noteId);
-    _notes.add(updatedNote);
-    _notesStreamController.add(_notes);
-    return updatedNote;
+    if (updatesCount == 0) {
+      throw CouldNotUpdateNoteException();
+    } else {
+      final updatedNote = await getNote(noteId: note.noteId);
+      _notes.removeWhere((note) => note.noteId == updatedNote.noteId);
+      _notes.add(updatedNote);
+      _notesStreamController.add(_notes);
+      return updatedNote;
+    }
   }
 
   Future<Iterable<DatabaseNote>> getAllNotes() async {
     await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
     final notes = await db.query(noteTable);
-    return notes.map((e) => DatabaseNote.fromRow(e));
-  }
 
-//  Future<Iterable<DatabaseNote>> getAllNotesFromUser({required String email}) async {
-//    await _ensureDbIsOpen();
-//    final db = _getDatabaseOrThrow();
-//    final user = await getUser(email: email);
-//    final notes = await db.query(noteTable, where: 'uid = ?', whereArgs: [user.uid]);
-//    if (notes.isEmpty) throw CouldNotFindNoteException();
-//    final results = notes.map((e) => DatabaseNote.fromRow(e));
-//    return results;
-//  }
+    return notes.map((noteRow) => DatabaseNote.fromRow(noteRow));
+  }
 
   Future<int> deleteAllNotes() async {
     await _ensureDbIsOpen();
