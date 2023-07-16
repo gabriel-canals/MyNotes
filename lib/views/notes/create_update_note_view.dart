@@ -82,10 +82,11 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
         actions: [
           IconButton(
               onPressed: () async {
-                final text = _textController.text;
+                String text = _textController.text;
                 if (_note == null || text.isEmpty) {
                   await cannotShareEmptyNoteDialog(context);
                 } else {
+                  text = '$text -- Note from MyNotes App.';
                   Share.share(text);
                 }
               },
