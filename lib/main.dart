@@ -20,7 +20,7 @@ void main() {
       ),
       home: BlocProvider<AuthBloc>(
         create: (context) => AuthBloc(FirebaseAuthProvider()),
-        child: const Homepage(),
+        child: const HomePage(),
       ),
       routes: {
         loginRoute: (context) => const LoginView(),
