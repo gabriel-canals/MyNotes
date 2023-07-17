@@ -12,7 +12,6 @@ class AuthEventInitialize extends AuthEvent {
 class AuthEventLogIn extends AuthEvent {
   final String email;
   final String passwd;
-
   const AuthEventLogIn(this.email, this.passwd);
 }
 
