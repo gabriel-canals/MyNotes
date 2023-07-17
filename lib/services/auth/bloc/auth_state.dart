@@ -7,6 +7,7 @@ abstract class AuthState {
   final bool isLoading;
   final String? loadingText;
   const AuthState({required this.isLoading, this.loadingText = 'Pleas wait a moment'});
+
 }
 
 class AuthStateLoggedIn extends AuthState {
@@ -25,6 +26,16 @@ class AuthStateLoggedOut extends AuthState with EquatableMixin {
 
   @override
   List<Object?> get props => [exception, isLoading];
+}
+
+class AuthStateForgotPassword extends AuthState {
+  final Exception? exception;
+  final bool hasSentEmail;
+  const AuthStateForgotPassword({
+    required this.exception,
+    required this.hasSentEmail,
+    required bool isLoading,
+  }) : super(isLoading: isLoading);
 }
 
 class AuthStateUninitialized extends AuthState {
