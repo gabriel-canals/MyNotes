@@ -84,7 +84,7 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
               onPressed: () async {
                 String text = _textController.text;
                 if (_note == null || text.isEmpty) {
-                  await cannotShareEmptyNoteDialog(context);
+                  await showCannotShareEmptyNoteDialog(context);
                 } else {
                   text = '$text -- Note from MyNotes App.';
                   Share.share(text);
