@@ -48,30 +48,32 @@ class _ForgorPasswordViewState extends State<ForgorPasswordView> {
         ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              const Text('If you forgot your password, enter your email and a reset link will be sent to you'),
-              TextField(
-                decoration: const InputDecoration(hintText: 'Email'),
-                keyboardType: TextInputType.emailAddress,
-                autocorrect: false,
-                autofocus: true,
-                controller: _textEditingController,
-              ),
-              TextButton(
-                onPressed: () {
-                  final email = _textEditingController.text;
-                  context.read<AuthBloc>().add(AuthEventForgotPassword(email: email));
-                },
-                child: const Text('Send me a reset link'),
-              ),
-              TextButton(
-                onPressed: () {
-                  context.read<AuthBloc>().add(const AuthEventLogOut());
-                },
-                child: const Text('Go back to login view'),
-              ),
-            ],
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                const Text('If you forgot your password, enter your email and a reset link will be sent to you'),
+                TextField(
+                  decoration: const InputDecoration(hintText: 'Email'),
+                  keyboardType: TextInputType.emailAddress,
+                  autocorrect: false,
+                  autofocus: true,
+                  controller: _textEditingController,
+                ),
+                TextButton(
+                  onPressed: () {
+                    final email = _textEditingController.text;
+                    context.read<AuthBloc>().add(AuthEventForgotPassword(email: email));
+                  },
+                  child: const Text('Send me a reset link'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    context.read<AuthBloc>().add(const AuthEventLogOut());
+                  },
+                  child: const Text('Go back to login view'),
+                ),
+              ],
+            ),
           ),
         ),
       ),
