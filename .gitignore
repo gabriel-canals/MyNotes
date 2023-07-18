@@ -33,6 +33,7 @@ key.properties
 .pub-cache/
 .pub/
 /build/
+\ios\Runner\GoogleService-Info.plist
 
 # Symbolication related
 app.*.symbols
