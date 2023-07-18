@@ -14,7 +14,6 @@ void main() {
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: myColor,
-        //primarySwatch: Colors.blue,
       ),
       home: BlocProvider<AuthBloc>(
         create: (context) => AuthBloc(FirebaseAuthProvider()),
