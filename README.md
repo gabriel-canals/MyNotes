@@ -1,6 +1,6 @@
-# mynotes
+# MyNotes App
 
-A new Flutter project. 
+A notes Android app made with Flutter
 
 ## Getting Started
 
