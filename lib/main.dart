@@ -6,13 +6,16 @@ import 'package:mynotes/services/auth/firebase_auth_provider.dart';
 import 'package:mynotes/homepage.dart';
 import 'package:mynotes/views/notes/create_update_note_view.dart';
 import 'constants/colors.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(
     MaterialApp(
+      supportedLocales: AppLocalizations.supportedLocales,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
+      title: 'MyNotes',
       theme: ThemeData(
         primarySwatch: myColor,
       ),

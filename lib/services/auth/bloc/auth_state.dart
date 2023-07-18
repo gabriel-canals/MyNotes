@@ -6,7 +6,7 @@ import 'package:mynotes/services/auth/auth_user.dart';
 abstract class AuthState {
   final bool isLoading;
   final String? loadingText;
-  const AuthState({required this.isLoading, this.loadingText = 'Pleas wait a moment'});
+  const AuthState({required this.isLoading, this.loadingText});
 
 }
 

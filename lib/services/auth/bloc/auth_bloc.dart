@@ -92,7 +92,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     });
     // log in
     on<AuthEventLogIn>((event, emit) async {
-      emit(const AuthStateLoggedOut(exception: null, isLoading: true, loadingText: 'Please wait while I log you in'));
+      emit(const AuthStateLoggedOut(
+        exception: null,
+        isLoading: true,
+        loadingText: null,
+      ));
       final email = event.email;
       final password = event.passwd;
       try {

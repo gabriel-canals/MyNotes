@@ -1,0 +1,64 @@
+{
+  "logout_button": "Cerrar sesión",
+  "signature": "-- Nota de MyNotes App.",
+  "note": "Nota",
+  "cancel": "Cancelar",
+  "yes": "Sí",
+  "delete": "Eliminar",
+  "sharing": "Compartir",
+  "ok": "OK",
+  "login": "Iniciar sesión",
+  "verify_email": "Verificar email",
+  "register": "Registrar cuenta",
+  "restart": "Reiniciar",
+
+  "start_typing_your_note": "Comienza a escribir tu nota",
+  "delete_note_prompt": "¿Seguro que quieres eliminar esta nota?",
+  "cannot_share_empty_note_prompt": "¡No se puede compartir una nota vacía!",
+  "generic_error_prompt": "Ha ocurrido un error",
+  "logout_dialog_prompt": "¿Seguro que quieres cerrar la sesión actual?",
+
+  "password_reset": "Restablecer contraseña",
+  "password_reset_dialog_prompt": "Te hemos enviado un enlace para restablecer tu contraseña. Por favor, comprueba tu bandeja de entrada.",
+
+  "login_error_cannot_find_user": "No se ha encontrado a ningún usuario con las credenciales introducidas",
+  "login_error_wrong_credentials": "Credenciales incorrectas",
+  "login_error_auth_error": "Error de autenticación",
+
+  "login_view_prompt": "Por favor, ¡inicia sesión con tu cuenta para interactuar y crear notas!",
+  
+  "login_view_forgot_password": "He olvidado mi contraseña",
+  "login_view_not_registered_yet": "¿Todavía no tienes cuenta? ¡Regístrate aquí!",
+
+  "email_text_field_placeholder": "Introduce tu email aquí",
+  "password_text_field_placeholder": "Introduce tu contraseña aquí",
+  
+  "forgot_password": "Contraseña Olvidada",
+  "forgot_password_view_generic_error": "No hemos podido procesar tu solicitud. Por favor, asegurate de que eres un usuario registrado. Si no lo eres, prueba a registrar una cuenta.",
+  "forgot_password_view_prompt": "Si has olvidado tu contraseña, introduce tu email y te enviaremos un enlace para restablecerla.",
+  "forgot_password_view_send_me_link": "Envíame un enlace para restablecer mi contraseña",
+  "forgot_password_view_back_to_login": "Volver al inicio de sesión",
+
+  "register_error_weak_password": "Esta contraseña no es segura. ¡Prueba con otra contraseña!",
+  "register_error_email_already_in_use": "Este email ha sido registrado por otro usuario. ¡Prueba con otro email!",
+  "register_error_generic": "Fallo en el registro. ¡Por favor, inténtalo más tarde!",
+  "register_error_invalid_email": "El email proporcionado no parece ser válido. ¡Prueba con otro email!",
+  "register_view_prompt": "¡Introduce tu email y contraseña para ver tus notas!",
+  "register_view_already_registered": "¿Ya tienes una cuenta? ¡Inicia sesión aquí!",
+
+  "verify_email_view_prompt": "Te hemos enviado un correo de verificación. Ábrelo para verificar tu cuenta. Si todavía no has recibido el correo, pulsa el siguiente botón",
+  "verify_email_send_email_verification": "Enviar correo de verificación",
+
+  "waiting": "Espera un momento...",
+  "waiting_for_login": "Iniciando sesión",
+
+  "notes_title": "{count, plural, =0{Sin notas} =1{1 nota} other{{count} notas}}",
+  "@notes_title": {
+      "placeholders": {
+          "count": {
+              "type": "int",
+              "example": "3 notas"
+          }
+      }
+  }
+}
