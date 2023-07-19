@@ -50,13 +50,17 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
     if (widgetNote != null) {
       _note = widgetNote;
       _textController.text = widgetNote.text; // The text field will have the current text of the note
-      _titleController.text = widgetNote.title ?? context.loc.note;
+      if (widgetNote.title.isEmpty) {
+        _titleController.text = context.loc.note;
+      } else {
+        _titleController.text = widgetNote.title;
+      }
       return widgetNote;
     }
     final existingNote = _note;
     if (existingNote != null) return existingNote;
     final currentUser = AuthService.firebase().currentUser!;
-    final newNote = await _notesService.createNewNote(ownerUID: currentUser.uid);
+    final newNote = await _notesService.createNewNote(ownerUID: currentUser.uid, title: context.loc.note);
     _note = newNote;
     return newNote;
   }
@@ -72,10 +76,16 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
     final note = _note;
     final text = _textController.text;
     String title = _titleController.text;
-    if (title.isEmpty) title = context.loc.note;
-    if (text.isNotEmpty || title.isNotEmpty && note != null) {
+    if (note != null) {
       await _notesService.updateNote(
-        documentID: note!.documentID,
+        documentID: note.documentID,
+        title: title,
+        text: note.text,
+      );
+    }
+    if (text.isNotEmpty && note != null) {
+      await _notesService.updateNote(
+        documentID: note.documentID,
         text: text,
         title: title,
       );
@@ -167,7 +177,7 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
                 ),
               );
             default:
-              return const CircularProgressIndicator();
+              return const Scaffold(body: Center(child: CircularProgressIndicator()));
           }
         });
   }
