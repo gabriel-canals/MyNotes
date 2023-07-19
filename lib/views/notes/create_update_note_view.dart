@@ -50,9 +50,7 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
     if (widgetNote != null) {
       _note = widgetNote;
       _textController.text = widgetNote.text; // The text field will have the current text of the note
-      if (widgetNote.title.isEmpty) {
-        _titleController.text = context.loc.note;
-      } else {
+      if (widgetNote.title.isNotEmpty) {
         _titleController.text = widgetNote.title;
       }
       return widgetNote;
@@ -60,7 +58,7 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
     final existingNote = _note;
     if (existingNote != null) return existingNote;
     final currentUser = AuthService.firebase().currentUser!;
-    final newNote = await _notesService.createNewNote(ownerUID: currentUser.uid, title: context.loc.note);
+    final newNote = await _notesService.createNewNote(ownerUID: currentUser.uid, title: '');
     _note = newNote;
     return newNote;
   }
@@ -109,6 +107,8 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
           String appBarTitleText = _titleController.text;
           switch (snapshot.connectionState) {
             case ConnectionState.done:
+            case ConnectionState.waiting:
+            case ConnectionState.active:
               _setUpTextControllerListener();
               return Scaffold(
                 appBar: AppBar(
@@ -146,34 +146,37 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
                         icon: const Icon(Icons.share)),
                   ],
                 ),
-                body: Column(
-                  children: [
-                    TextField(
-                      onChanged: (value) {
-                        appBarTitleText = value;
-                      },
-                      controller: _titleController,
-                      keyboardType: TextInputType.multiline,
-                      maxLines: null,
-                      style: const TextStyle(fontSize: 20),
-                      decoration: InputDecoration(
-                        hintText: context.loc.start_typing_your_note,
-                        border: InputBorder.none,
+                body: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                      TextField(
+                        onChanged: (value) {
+                          appBarTitleText = value;
+                        },
+                        controller: _titleController,
+                        keyboardType: TextInputType.multiline,
+                        maxLines: null,
+                        style: const TextStyle(fontSize: 20),
+                        decoration: InputDecoration(
+                          hintText: context.loc.note_title,
+                          border: InputBorder.none,
+                        ),
                       ),
-                    ),
-                    TextField(
-                      controller: _textController,
-                      keyboardType: TextInputType.multiline,
-                      maxLines: null,
-                      showCursor: true,
-                      style: const TextStyle(fontSize: 17),
-                      decoration: InputDecoration(
-                          hintText: context.loc.start_typing_your_note,
-                          enabledBorder: const UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black),
-                          )),
-                    ),
-                  ],
+                      TextField(
+                        controller: _textController,
+                        keyboardType: TextInputType.multiline,
+                        maxLines: null,
+                        showCursor: true,
+                        style: const TextStyle(fontSize: 17),
+                        decoration: InputDecoration(
+                            hintText: context.loc.start_typing_your_note,
+                            enabledBorder: const UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.black),
+                            )),
+                      ),
+                    ],
+                  ),
                 ),
               );
             default:

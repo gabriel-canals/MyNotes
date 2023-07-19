@@ -17,18 +17,20 @@ class NotesListView extends StatelessWidget {
     required this.onTap,
   });
 
+
+
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
       itemCount: notes.length,
       itemBuilder: (context, index) {
         final note = notes.elementAt(index);
-        String title = note.title;
+        String title = note.title == '' ? context.loc.note : note.title;
         return Padding(
           padding: const EdgeInsets.all(8.0),
           child: ListTile(
             shape: RoundedRectangleBorder(
-              side: const BorderSide(width: 1),
+              side: const BorderSide(width: 0.75),
               borderRadius: BorderRadius.circular(20),
             ),
             leading: CircleAvatar(
@@ -50,7 +52,10 @@ class NotesListView extends StatelessWidget {
               maxLines: 1,
               softWrap: true,
               overflow: TextOverflow.ellipsis,
-              style: TextStyle(color: Colors.black, fontSize: 16),
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 16,
+              ),
             ),
             trailing: IconButton(
               onPressed: () async {

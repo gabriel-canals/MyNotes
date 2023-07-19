@@ -2,6 +2,7 @@
   "logout_button": "Cerrar sesión",
   "signature": "-- Nota de MyNotes App.",
   "note": "Nota",
+  "note_title": "Título",
   "cancel": "Cancelar",
   "yes": "Sí",
   "delete": "Eliminar",
@@ -51,6 +52,7 @@
 
   "waiting": "Espera un momento...",
   "waiting_for_login": "Iniciando sesión",
+  "loading_new_note": "Creando nueva nota...",
 
   "notes_title": "{count, plural, =0{Sin notas} =1{1 nota} other{{count} notas}}",
   "@notes_title": {

@@ -3,6 +3,7 @@
   "logout_button": "Log out",
   "signature": "-- Note from MyNotes App.",
   "note": "Note",
+  "note_title": "Title",
   "cancel": "Cancel",
   "yes": "Yes",
   "delete": "Delete",
@@ -52,6 +53,7 @@
 
   "waiting": "Wait a moment...",
   "waiting_for_login": "Please wait while I log you in",
+  "loading_new_note": "Creating new note...",
 
   "notes_title": "{count, plural, =0{No notes yet} =1{1 note} other{{count} notes}}",
   "@notes_title": {
