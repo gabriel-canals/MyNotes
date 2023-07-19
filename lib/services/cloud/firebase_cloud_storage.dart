@@ -21,9 +21,13 @@ class FirebaseCloudStorage {
   Future<void> updateNote({
     required String documentID,
     required String text,
+    required String? title,
   }) async {
     try {
-      await notes.doc(documentID).update({textFieldName: text});
+      await notes.doc(documentID).update({
+        textFieldName: text,
+        titleFieldName: title,
+      });
     } catch (e) {
       throw CouldNotUpdateNoteException();
     }
@@ -39,6 +43,7 @@ class FirebaseCloudStorage {
       documentID: fetchedNote.id,
       ownerUID: ownerUID,
       text: '',
+      title: null,
     );
   }
 

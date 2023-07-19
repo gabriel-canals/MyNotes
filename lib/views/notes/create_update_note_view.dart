@@ -18,11 +18,13 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
   CloudNote? _note;
   late final FirebaseCloudStorage _notesService;
   late final TextEditingController _textController;
+  late final TextEditingController _titleController;
 
   @override
   void initState() {
     _notesService = FirebaseCloudStorage();
     _textController = TextEditingController();
+    _titleController = TextEditingController();
     super.initState();
   }
 
@@ -30,9 +32,11 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
     final note = _note;
     if (note == null) return;
     final text = _textController.text;
+    final title = _titleController.text;
     await _notesService.updateNote(
       documentID: note.documentID,
       text: text,
+      title: title,
     );
   }
 
@@ -46,6 +50,7 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
     if (widgetNote != null) {
       _note = widgetNote;
       _textController.text = widgetNote.text; // The text field will have the current text of the note
+      _titleController.text = widgetNote.title ?? context.loc.note;
       return widgetNote;
     }
     final existingNote = _note;
@@ -58,13 +63,23 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
 
   void _deleteNoteIfEmpty() {
     final note = _note;
-    if (_textController.text.isEmpty && note != null) _notesService.deleteNote(documentID: note.documentID);
+    final text = _textController.text;
+    final title = _titleController.text;
+    if (text.isEmpty && title.isEmpty && note != null) _notesService.deleteNote(documentID: note.documentID);
   }
 
   void _saveNoteIfNotEmpty() async {
     final note = _note;
     final text = _textController.text;
-    if (text.isNotEmpty && note != null) await _notesService.updateNote(documentID: note.documentID, text: text);
+    String title = _titleController.text;
+    if (title.isEmpty) title = context.loc.note;
+    if (text.isNotEmpty || title.isNotEmpty && note != null) {
+      await _notesService.updateNote(
+        documentID: note!.documentID,
+        text: text,
+        title: title,
+      );
+    }
   }
 
   @override
@@ -72,47 +87,88 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
     _deleteNoteIfEmpty();
     _saveNoteIfNotEmpty();
     _textController.dispose();
+    _titleController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(context.loc.note),
-        actions: [
-          IconButton(
-              onPressed: () async {
-                String text = _textController.text;
-                if (_note == null || text.isEmpty) {
-                  await showCannotShareEmptyNoteDialog(context);
-                } else {
-                  text = '$text ${context.loc.signature}';
-                  Share.share(text);
-                }
-              },
-              icon: const Icon(Icons.share)),
-        ],
-      ),
-      body: FutureBuilder(
+    return FutureBuilder(
         future: createOrGetExistingNote(context),
         builder: (context, snapshot) {
+          String appBarTitleText = _titleController.text;
           switch (snapshot.connectionState) {
             case ConnectionState.done:
               _setUpTextControllerListener();
-              return TextField(
-                controller: _textController,
-                keyboardType: TextInputType.multiline,
-                maxLines: null,
-                decoration: InputDecoration(
-                  hintText: context.loc.start_typing_your_note,
+              return Scaffold(
+                appBar: AppBar(
+                  title: TextField(
+                    readOnly: true,
+                    maxLines: 1,
+                    controller: _titleController,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      fontSize: 20,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    decoration: InputDecoration(
+                      hintText: appBarTitleText.isEmpty ? context.loc.note : appBarTitleText,
+                      border: InputBorder.none,
+                      hintStyle: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        fontSize: 20,
+                      ),
+                    ),
+                  ),
+                  actions: [
+                    IconButton(
+                        onPressed: () async {
+                          String text = _textController.text;
+                          if (_note == null || text.isEmpty) {
+                            await showCannotShareEmptyNoteDialog(context);
+                          } else {
+                            text = '$text ${context.loc.signature}';
+                            Share.share(text);
+                          }
+                        },
+                        icon: const Icon(Icons.share)),
+                  ],
+                ),
+                body: Column(
+                  children: [
+                    TextField(
+                      onChanged: (value) {
+                        appBarTitleText = value;
+                      },
+                      controller: _titleController,
+                      keyboardType: TextInputType.multiline,
+                      maxLines: null,
+                      style: const TextStyle(fontSize: 20),
+                      decoration: InputDecoration(
+                        hintText: context.loc.start_typing_your_note,
+                        border: InputBorder.none,
+                      ),
+                    ),
+                    TextField(
+                      controller: _textController,
+                      keyboardType: TextInputType.multiline,
+                      maxLines: null,
+                      showCursor: true,
+                      style: const TextStyle(fontSize: 17),
+                      decoration: InputDecoration(
+                          hintText: context.loc.start_typing_your_note,
+                          enabledBorder: const UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.black),
+                          )),
+                    ),
+                  ],
                 ),
               );
             default:
               return const CircularProgressIndicator();
           }
-        },
-      ),
-    );
+        });
   }
 }

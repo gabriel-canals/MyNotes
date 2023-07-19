@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mynotes/extensions/buildcontext/loc.dart';
 import 'package:mynotes/services/cloud/cloud_note.dart';
 import 'package:mynotes/utilities/dialogs/delete_dialog.dart';
 
@@ -23,8 +24,8 @@ class NotesListView extends StatelessWidget {
         final note = notes.elementAt(index);
         return ListTile(
           title: Text(
-            note.text,
-            maxLines: 1,
+            note.title!.isEmpty ? context.loc.note : note.title!,
+            maxLines: 3,
             softWrap: true,
             overflow: TextOverflow.ellipsis,
           ),
