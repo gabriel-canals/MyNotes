@@ -19,6 +19,8 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
   late final FirebaseCloudStorage _notesService;
   late final TextEditingController _textController;
   late final TextEditingController _titleController;
+  late final String _originalText;
+  late final String _originalTitle;
 
   @override
   void initState() {
@@ -51,8 +53,10 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
     if (widgetNote != null) {
       _note = widgetNote;
       _textController.text = widgetNote.text; // The text field will have the current text of the note
+      _originalText = _textController.text;
       if (widgetNote.title.isNotEmpty) {
         _titleController.text = widgetNote.title;
+        _originalTitle = widgetNote.title;
       }
       return widgetNote;
     }
@@ -76,6 +80,7 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
     final text = _textController.text;
     String title = _titleController.text;
     if (note != null && (text.isNotEmpty || title.isNotEmpty)) {
+      if (text == _originalText && title == _originalTitle) return;
       await _notesService.updateNote(
         documentID: note.documentID,
         text: text,
