@@ -27,6 +27,12 @@ class _NotesViewState extends State<NotesView> {
   late final FirebaseCloudStorage _notesService;
   String get userID => AuthService.firebase().currentUser!.uid;
 
+  Iterable<CloudNote> sortNotes(Iterable<CloudNote> allNotes) {
+    final notes = allNotes.toList();
+    notes.sort((a, b) => b.updateTime.compareTo(a.updateTime));
+    return notes;
+  }
+
   @override
   void initState() {
     _notesService = FirebaseCloudStorage();
@@ -86,7 +92,7 @@ class _NotesViewState extends State<NotesView> {
             case ConnectionState.waiting:
             case ConnectionState.active:
               if (snapshot.hasData) {
-                final allNotes = snapshot.data as Iterable<CloudNote>;
+                final allNotes = sortNotes(snapshot.data!);
                 return NotesListView(
                   notes: allNotes,
                   onDeleteNote: (note) async {

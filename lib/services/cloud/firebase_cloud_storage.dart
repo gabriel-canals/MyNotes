@@ -18,15 +18,13 @@ class FirebaseCloudStorage {
     }
   }
 
-  Future<void> updateNote({
-    required String documentID,
-    required String text,
-    required String? title,
-  }) async {
+  Future<void> updateNote(
+      {required String documentID, required String text, required String? title, required DateTime updateTime}) async {
     try {
       await notes.doc(documentID).update({
         textFieldName: text,
         titleFieldName: title,
+        updateTimeFieldName: updateTime.millisecondsSinceEpoch,
       });
     } catch (e) {
       throw CouldNotUpdateNoteException();
@@ -38,6 +36,7 @@ class FirebaseCloudStorage {
       ownerUIDFieldName: ownerUID,
       textFieldName: '',
       titleFieldName: title,
+      updateTimeFieldName: DateTime.now().toUtc().millisecondsSinceEpoch,
     });
     final fetchedNote = await document.get();
     return CloudNote(
@@ -45,6 +44,7 @@ class FirebaseCloudStorage {
       ownerUID: ownerUID,
       text: '',
       title: title,
+      updateTime: DateTime.now().toUtc().millisecondsSinceEpoch,
     );
   }
 

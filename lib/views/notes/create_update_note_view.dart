@@ -37,6 +37,7 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
       documentID: note.documentID,
       text: text,
       title: title,
+      updateTime: DateTime.now().toUtc(),
     );
   }
 
@@ -79,6 +80,7 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
         documentID: note.documentID,
         text: text,
         title: title,
+        updateTime: DateTime.now().toUtc(),
       );
     }
   }

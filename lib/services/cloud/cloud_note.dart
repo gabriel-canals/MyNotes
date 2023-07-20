@@ -8,8 +8,10 @@ class CloudNote {
   final String ownerUID;
   final String text;
   final String title;
+  final int updateTime;
 
   const CloudNote({
+    required this.updateTime,
     required this.documentID,
     required this.ownerUID,
     required this.text,
@@ -20,5 +22,6 @@ class CloudNote {
       : documentID = snapshot.id,
         ownerUID = snapshot.data()[ownerUIDFieldName],
         text = snapshot.data()[textFieldName],
-        title = snapshot.data()[titleFieldName];
+        title = snapshot.data()[titleFieldName],
+        updateTime = snapshot.data()[updateTimeFieldName];
 }
