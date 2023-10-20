@@ -4,7 +4,7 @@
 
 ## What is MyNotes
 
-MyNotes starts as a summer project whose main goal was to learn the basics of Dart and Flutter and get to know the mobile development.
+MyNotes starts as a summer project which main goal was to learn the basics of Dart and Flutter and get to know the mobile development.
 
 This project initially started with the Complete Flutter Course provided by FreeCodeCamp.org. After finishing the course the project continued to be updated and new features have been added.
 
